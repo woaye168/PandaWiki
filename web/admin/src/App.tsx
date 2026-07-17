@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useLocation, useRoutes } from 'react-router-dom';
 
 import { getApiV1License } from './request/pro/License';
+import { ConstsLicenseEdition } from './request/types';
 
 import { setLicense } from './store/slices/config';
 
@@ -23,9 +24,17 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      getApiV1License().then(res => {
-        dispatch(setLicense(res));
-      });
+      getApiV1License()
+        .then(res => {
+          dispatch(setLicense(res));
+        })
+        .catch(() => {
+          dispatch(
+            setLicense({
+              edition: ConstsLicenseEdition.LicenseEditionEnterprise,
+            }),
+          );
+        });
     }
   }, [token]);
 

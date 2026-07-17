@@ -4,7 +4,6 @@ import {
   postShareProV1AuthCas,
   postShareProV1AuthDingtalk,
   postShareProV1AuthFeishu,
-  postShareProV1AuthGithub,
   postShareProV1AuthLdap,
   postShareProV1AuthOauth,
   postShareProV1AuthWecom,
@@ -31,11 +30,7 @@ import { FooterProvider } from '@/components/footer';
 import { IconDingDing, IconQiyeweixin } from '@/components/icons';
 import { IconGitHub1 } from '@panda-wiki/icons';
 import { useStore } from '@/provider';
-import {
-  ConstsSourceType,
-  ConstsAuthType,
-  ConstsLicenseEdition,
-} from '@/request/types';
+import { ConstsSourceType, ConstsAuthType } from '@/request/types';
 import {
   Box,
   Button,
@@ -104,7 +99,6 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [authType, setAuthType] = useState<ConstsAuthType>();
-  const [licenseEdition, setLicenseEdition] = useState<ConstsLicenseEdition>();
   const [sourceType, setSourceType] = useState<ConstsSourceType>();
   const { kbDetail, themeMode, mobile = false, setNodeList } = useStore();
   const basePath = useBasePath();
@@ -201,19 +195,11 @@ export default function Login() {
 
   const handleGitHubLogin = () => {
     clearCookie();
-    if (licenseEdition === ConstsLicenseEdition.LicenseEditionFree) {
-      postShareV1AuthGithub({
-        redirect_url: redirectUrl,
-      }).then(res => {
-        window.location.href = res.url || '/';
-      });
-    } else {
-      postShareProV1AuthGithub({
-        redirect_url: redirectUrl,
-      }).then(res => {
-        window.location.href = res.url || '/';
-      });
-    }
+    postShareV1AuthGithub({
+      redirect_url: redirectUrl,
+    }).then(res => {
+      window.location.href = res.url || '/';
+    });
   };
 
   const handleCASLogin = () => {
@@ -256,7 +242,6 @@ export default function Login() {
     getShareV1AuthGet({}).then(res => {
       setAuthType(res?.auth_type);
       setSourceType(res?.source_type);
-      setLicenseEdition(res?.license_edition);
       if (res?.auth_type === ConstsAuthType.AuthTypeNull) {
         window.open(redirectUrl, '_self');
       }

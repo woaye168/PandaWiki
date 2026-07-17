@@ -206,13 +206,7 @@ func (m *JWTMiddleware) ValidateLicenseEdition(needEditions ...consts.LicenseEdi
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 
-			edition, ok := c.Get("edition").(consts.LicenseEdition)
-			if !ok {
-				return c.JSON(http.StatusForbidden, domain.PWResponse{
-					Success: false,
-					Message: "Unauthorized ValidateLicenseEdition",
-				})
-			}
+			edition := consts.GetLicenseEdition(c)
 
 			if !slices.Contains(needEditions, edition) {
 				return c.JSON(http.StatusForbidden, domain.PWResponse{
